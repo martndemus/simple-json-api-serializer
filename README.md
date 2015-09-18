@@ -137,6 +137,13 @@ Generates:
 }
 ```
 
+If your object does not abide by the `_id` or `_ids` convention for relations,
+you can specify what method should be called to retrieve the foreign key with
+`has_one  :author, foreign_key: :username`
+
+You can also specify the type of the related object with: `has_one :author, type: :user`.
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
