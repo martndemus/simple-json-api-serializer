@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'simple/json/api/serializer/version'
+require 'json_api/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "simple-json-api-serializer"
-  spec.version       = Simple::Json::Api::Serializer::VERSION
+  spec.version       = JSONApi::VERSION
   spec.authors       = ["Marten Schilstra"]
   spec.email         = ["mail@martenschilstra.nl"]
 
@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
     Does not (yet) have support for links and sideloading.
   }
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/martndemus/simple-json-api-serializer"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
@@ -27,6 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", "~> 4.2"
 
   spec.add_development_dependency "bundler", "~> 1.10"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rake",    "~> 10.0"
+  spec.add_development_dependency "rspec",   "~> 3.0"
 end

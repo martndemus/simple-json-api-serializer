@@ -41,7 +41,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.10)
   rake (~> 10.0)
-  rspec
+  rspec (~> 3.0)
   simple-json-api-serializer!
 
 BUNDLED WITH
