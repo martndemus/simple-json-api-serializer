@@ -4,8 +4,8 @@ require 'json_api/relationship_serializer'
 
 
 module JSONApi
-  class Serializer
-    def to_json(object, **options)
+  class ObjectSerializer
+    def serialize(object, **options)
       ActiveSupport::JSON.encode({ data: data_for(object, **options) })
     end
 
@@ -35,7 +35,7 @@ module JSONApi
 
     def resource_identifier_for(object, **options)
       {
-        type: type_for(object),
+        type: type_for(object, options),
         id:   id_for(object, options)
       }
     end
@@ -61,8 +61,9 @@ module JSONApi
       canonicalize_id(object.send(id_attribute))
     end
 
-    def type_for(object)
-      canonicalize_type_name(object.class.name)
+    def type_for(object, **options)
+      type_name = options[:type] || object.class.name
+      canonicalize_type_name(type_name)
     end
 
     def canonicalize_id(id)

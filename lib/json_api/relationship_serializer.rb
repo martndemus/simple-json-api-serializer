@@ -19,12 +19,22 @@ module JSONApi
 
     protected
 
-    def type_for(options)
-      options[:type] || options[:name]
+    def type_for(object, options)
+      if options[:polymorphic]
+        foreign_type_key =
+          options[:foreign_type_key] ||  "#{key_base_for(options)}_type"
+        object.send(foreign_type_key)
+      else
+        options[:type] || options[:name]
+      end
+    end
+
+    def key_base_for(options)
+      options[:name].to_s.singularize
     end
 
     def key_for(options)
-      options[:name].to_s.singularize
+      key_base_for(options)
     end
 
     def relationship_for(object, **options)
@@ -47,7 +57,7 @@ module JSONApi
 
       def data_for(object, options)
         ids = relationship_for(object, options)
-        ids.map { |id| resource_identifier_for(type_for(options), id) }
+        ids.map { |id| resource_identifier_for(type_for(object, options), id) }
            .compact
       end
     end
@@ -59,7 +69,7 @@ module JSONApi
 
       def data_for(object, options)
         id = relationship_for(object, options)
-        resource_identifier_for(type_for(options), id)
+        resource_identifier_for(type_for(object, options), id)
       end
     end
   end

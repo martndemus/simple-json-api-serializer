@@ -5,7 +5,6 @@ require 'support/test_objects'
 include TestObjects
 
 RSpec.describe JSONApi::RelationshipSerializer do
-
   describe "#as_json" do
     it "can serialize a simple belongs to relationship" do
       object = Article.new(1, 12)
@@ -19,6 +18,23 @@ RSpec.describe JSONApi::RelationshipSerializer do
       result = subject.as_json(object, name: :author, to: :one, type: :user)
 
       expect(result).to eq({ data: { type: 'users', id: '12' } })
+    end
+
+    it "can be told to lookup the type for a has one relation" do
+      object = Bar.new(1, 2, 'SpecialBaz')
+      result = subject.as_json(object, name: :baz, to: :one, polymorphic: true)
+
+      expect(result).to eq({ data: { type: 'special-bazs', id: '2' } })
+    end
+
+    it "can be told to lookup the type for a has one relation with a special key" do
+      object = Anchor.new(1, 2, 'NoFollow')
+      result = subject.as_json(object, name: :link,
+                                       to: :one,
+                                       polymorphic: true,
+                                       foreign_type_key: :link_relation)
+
+      expect(result).to eq({ data: { type: 'no-follows', id: '2' } })
     end
 
     it "can be given a custom key" do

@@ -1,14 +1,14 @@
 require 'spec_helper'
 require 'json'
-require 'json_api/serializer'
+require 'json_api/object_serializer'
 require 'support/test_objects'
 
 include TestObjects
 
-RSpec.describe JSONApi::Serializer do
-  describe "#to_json" do
+RSpec.describe JSONApi::ObjectSerializer do
+  describe "#serialize" do
     it "serializes a simple object" do
-      result = subject.to_json(Duck.new(1))
+      result = subject.serialize(Duck.new(1))
       expect(JSON.parse(result)).to eq({
         'data' => {
           'type' => 'ducks',
@@ -18,7 +18,7 @@ RSpec.describe JSONApi::Serializer do
     end
 
     it "serializes an array of simple objects" do
-      result = subject.to_json([Duck.new(1), Duck.new(2)])
+      result = subject.serialize([Duck.new(1), Duck.new(2)])
       expect(JSON.parse(result)).to eq({
         'data' => [
           { 'type' => 'ducks', 'id' => '1' },
@@ -28,7 +28,7 @@ RSpec.describe JSONApi::Serializer do
     end
 
     it "can be told to use a specific attribute for the id" do
-      result = subject.to_json(Car.new('AB-123-Z'), id_attribute: :number_plate)
+      result = subject.serialize(Car.new('AB-123-Z'), id_attribute: :number_plate)
       expect(JSON.parse(result)).to eq({
         'data' => {
           'type' => 'cars',
@@ -37,10 +37,20 @@ RSpec.describe JSONApi::Serializer do
       })
     end
 
+    it "can be told to set a specific type" do
+      result = subject.serialize(Duck.new(1), type: :bird)
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'birds',
+          'id'   => '1'
+        }
+      })
+    end
+
     it "can serialize attributes" do
       object     = Address.new(1, 'Smithons Street', 12, '8493AB', 'Smithons')
       attributes = %i{street number zip_code city}
-      result     = subject.to_json(object, attributes: attributes)
+      result     = subject.serialize(object, attributes: attributes)
 
       expect(JSON.parse(result)).to eq({
         'data' => {
@@ -58,7 +68,7 @@ RSpec.describe JSONApi::Serializer do
 
     it "can serialize a simple belongs to relationship" do
       object = Article.new(1, 12)
-      result = subject.to_json(object, relationships: [{ name: :author }])
+      result = subject.serialize(object, relationships: [{ name: :author }])
 
       expect(JSON.parse(result)).to eq({
         'data' => {
@@ -74,7 +84,7 @@ RSpec.describe JSONApi::Serializer do
     end
 
     it "skips empty custom settings" do
-      result = subject.to_json(Duck.new(1),
+      result = subject.serialize(Duck.new(1),
                                id_attribute: nil,
                                relationships: [],
                                attributes: [])

@@ -1,10 +1,10 @@
-require 'json_api/serializer'
+require 'json_api/object_serializer'
 
 module JSONApi
   class ObjectSerializerDefinition
     class << self
       def serialize(object)
-        Serializer.new.to_json(object, {
+        ObjectSerializer.new.serialize(object, {
           id_attribute:  id_attribute,
           attributes:    attributes,
           relationships: relationships
