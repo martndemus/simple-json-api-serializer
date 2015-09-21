@@ -60,6 +60,13 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
   end
 
   describe ".serialize" do
+    let(:object)     { double(:object) }
+    let(:serializer) { double(:serializer) }
+
+    before do
+      expect(JSONApi::ObjectSerializer).to receive(:new) { serializer }
+    end
+
     it "passes the object with the definition to JSONApi::Serializer#serialize" do
       definition = make_definition do
         id_attribute :bar
@@ -67,18 +74,26 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
         relationship :baz
       end
 
-      object     = double(:object)
-      serializer = double(:serializer)
-
       expect(serializer).to receive(:serialize).with(object, {
         id_attribute: :bar,
         attributes: [:foo],
         relationships: [{ name: :baz }]
       })
 
-      expect(JSONApi::ObjectSerializer).to receive(:new) { serializer }
-
       definition.serialize(object)
+    end
+
+    it "passes includes to ther serializer" do
+      definition = make_definition {}
+
+      expect(serializer).to receive(:serialize).with(object, {
+        include: [:foo],
+        id_attribute: nil,
+        attributes: [],
+        relationships: []
+      })
+
+      definition.serialize(object, include: [:foo])
     end
   end
 end

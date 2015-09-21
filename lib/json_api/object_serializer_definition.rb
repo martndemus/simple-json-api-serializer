@@ -3,12 +3,12 @@ require 'json_api/object_serializer'
 module JSONApi
   class ObjectSerializerDefinition
     class << self
-      def serialize(object)
-        ObjectSerializer.new.serialize(object, {
-          id_attribute:  id_attribute,
-          attributes:    attributes,
-          relationships: relationships
-        })
+      def serialize(object, **options)
+        options[:id_attribute]  ||= id_attribute
+        options[:attributes]    ||= attributes
+        options[:relationships] ||= relationships
+
+        ObjectSerializer.new.serialize(object, **options)
       end
 
       def inherited(specialization)
