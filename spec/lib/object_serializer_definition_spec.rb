@@ -75,8 +75,8 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
       end
 
       expect(serializer).to receive(:serialize).with(object, {
-        id_attribute: :bar,
-        attributes: [:foo],
+        id_attribute:  :bar,
+        attributes:    [:foo],
         relationships: [{ name: :baz }]
       })
 
@@ -87,9 +87,9 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
       definition = make_definition {}
 
       expect(serializer).to receive(:serialize).with(object, {
-        include: [:foo],
-        id_attribute: nil,
-        attributes: [],
+        include:       [:foo],
+        id_attribute:  nil,
+        attributes:    [],
         relationships: []
       })
 
