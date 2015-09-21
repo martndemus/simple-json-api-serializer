@@ -3,7 +3,7 @@
 * An extremely simple JSON Api serializer.
 * It supports serializing any Ruby object. 
 * It does not target a specific framework.
-* Does not (yet) support links and includes.
+* Does not (yet) support links.
 
 ## Installation
 
@@ -54,6 +54,13 @@ Which generates:
     "id": "1"
   }
 }
+```
+
+You can also use the `hashify` function:
+
+```ruby
+MyObjectSerializer.hashify(my_object)
+# { :data => { :type => "my-objects", :id => "1" } }
 ```
 
 #### Configuring the output
@@ -143,6 +150,14 @@ you can specify what method should be called to retrieve the foreign key with
 
 You can also specify the type of the related object with: `has_one :author, type: :user`.
 
+#### Includes
+
+You can add includes by adding passing an array of objects to the serialize function:
+
+```ruby
+comments_json_hash = CommentSerializer.hashify(comments)
+PostSerializer.serialize(post, include: comments_json_hash)
+```
 
 ## Development
 
