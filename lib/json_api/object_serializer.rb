@@ -6,13 +6,17 @@ require 'json_api/relationship_serializer'
 module JSONApi
   class ObjectSerializer
     def serialize(object, **options)
+      ActiveSupport::JSON.encode(hashify(object, **options))
+    end
+
+    def hashify(object, **options)
       hash = { data: data_for(object, **options) }
 
       if options[:include].is_a?(Array)
         hash[:included] = options[:include]
       end
 
-      ActiveSupport::JSON.encode(hash)
+      hash
     end
 
     private

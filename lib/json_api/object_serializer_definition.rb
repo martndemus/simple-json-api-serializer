@@ -4,11 +4,13 @@ module JSONApi
   class ObjectSerializerDefinition
     class << self
       def serialize(object, **options)
-        options[:id_attribute]  ||= id_attribute
-        options[:attributes]    ||= attributes
-        options[:relationships] ||= relationships
-
+        options = merge_options(**options)
         ObjectSerializer.new.serialize(object, **options)
+      end
+
+      def hashify(object, **options)
+        options = merge_options(**options)
+        ObjectSerializer.new.hashify(object, **options)
       end
 
       def inherited(specialization)
@@ -44,6 +46,15 @@ module JSONApi
       def has_many(name, **config)
         config[:to] = :many
         relationship(name, config)
+      end
+
+      private
+
+      def merge_options(**options)
+        options[:id_attribute]  ||= id_attribute
+        options[:attributes]    ||= attributes
+        options[:relationships] ||= relationships
+        options
       end
     end
   end
