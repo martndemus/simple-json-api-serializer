@@ -83,6 +83,25 @@ RSpec.describe JSONApi::ObjectSerializer do
       })
     end
 
+    it "accepts an array of includes" do
+      includes = [
+        { type: 'ducklings', id: '1' },
+        { type: 'ducklings', id: '2' }
+      ];
+      result = subject.serialize(Duck.new(1), include: includes)
+
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'ducks',
+          'id'   => '1'
+        },
+        'included' => [
+          { 'type' => 'ducklings', 'id' => '1' },
+          { 'type' => 'ducklings', 'id' => '2' },
+        ]
+      })
+    end
+
     it "skips empty custom settings" do
       result = subject.serialize(Duck.new(1),
                                id_attribute: nil,
