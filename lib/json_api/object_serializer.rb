@@ -40,10 +40,15 @@ module JSONApi
     end
 
     def resource_identifier_for(object, **options)
-      {
-        type: type_for(object, options),
-        id:   id_for(object, options)
+      resource_identifier = {
+        type: type_for(object, options)
       }
+
+      unless options[:new_record]
+        resource_identifier[:id] = id_for(object, options)
+      end
+
+      resource_identifier
     end
 
     def relationships_for(object, options)

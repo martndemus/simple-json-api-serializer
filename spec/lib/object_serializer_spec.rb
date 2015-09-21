@@ -102,6 +102,15 @@ RSpec.describe JSONApi::ObjectSerializer do
       })
     end
 
+    it "can serialize for a new record" do
+      result = subject.serialize(Duck.new(nil), new_record: true)
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'ducks'
+        }
+      })
+    end
+
     it "skips empty custom settings" do
       result = subject.serialize(Duck.new(1),
                                id_attribute: nil,
