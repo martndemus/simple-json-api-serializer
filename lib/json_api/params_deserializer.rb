@@ -1,7 +1,7 @@
 module JSONApi
   class ParamsDeserializer
-    def self.deserialize(data)
-      self.new.deserialize(data)
+    def self.deserialize(data, **options)
+      self.new.deserialize(data, **options)
     end
 
     def deserialize(data, **options)
