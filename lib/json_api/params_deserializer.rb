@@ -10,6 +10,8 @@ module JSONApi
       attributes    = sanitize_hash(data.fetch('attributes', {}))
       relationships = data.fetch('relationships', {})
 
+      attributes['id'] = data['id'] unless data['id'].nil?
+
       deserialize_relationships(relationships, attributes)
 
       if options[:root] == false
