@@ -4,7 +4,7 @@ module JSONApi
       self.new.deserialize(data)
     end
 
-    def deserialize(data)
+    def deserialize(data, **options)
       type = sanitize_type_name(data.fetch('type'))
 
       attributes    = sanitize_hash(data.fetch('attributes', {}))
@@ -12,7 +12,11 @@ module JSONApi
 
       deserialize_relationships(relationships, attributes)
 
-      { type => attributes }
+      if options[:root] == false
+        attributes
+      else
+        { type => attributes }
+      end
     end
 
     private

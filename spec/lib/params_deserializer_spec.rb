@@ -14,6 +14,19 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     expect(result).to eq({ 'foo' => { 'foo' => 1, 'bar' => 'baz' } })
   end
 
+  it "deserializes without root key" do
+    params = {
+      'type' => 'foos',
+      'attributes' => {
+        'foo' => 1,
+        'bar' => 'baz'
+      }
+    }
+
+    result = subject.deserialize(params, root: false)
+    expect(result).to eq({ 'foo' => 1, 'bar' => 'baz' })
+  end
+
   it "deserializes relationships" do
     params = {
       'type' => 'foos',
