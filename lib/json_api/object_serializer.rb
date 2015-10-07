@@ -48,7 +48,7 @@ module JSONApi
         type: type_for(object, options)
       }
 
-      unless options[:new_record]
+      unless options[:new_record] == true
         resource_identifier[:id] = id_for(object, options)
       end
 
