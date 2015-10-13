@@ -42,7 +42,7 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     }
 
     result = subject.deserialize(params)
-    expect(result).to eq({ 'foo' => { 'bar_id' => 42, 'bar_type' => 'bar' } })
+    expect(result).to eq({ 'foo' => { 'bar_id' => 42, 'bar_type' => 'Bar' } })
   end
 
   it "normalizes keys" do
@@ -66,7 +66,7 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
       'bar_foo' => {
         'quux_baz'     => 42,
         'foo_bar_id'   => 42,
-        'foo_bar_type' => 'bar'
+        'foo_bar_type' => 'Bar'
       }
     })
   end
