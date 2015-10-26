@@ -28,8 +28,10 @@ module JSONApi
         data = data.fetch('data')
         name = sanitize_attribute_name(name)
 
-        attributes["#{name}_id"]   = data.fetch('id')
-        attributes["#{name}_type"] = sanitize_type_name(data.fetch('type')).classify
+        if data
+          attributes["#{name}_id"]   = data.fetch('id')
+          attributes["#{name}_type"] = sanitize_type_name(data.fetch('type')).classify
+        end
       end
     end
 

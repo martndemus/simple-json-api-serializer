@@ -45,6 +45,25 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     expect(result).to eq({ 'foo' => { 'bar_id' => 42, 'bar_type' => 'Bar' } })
   end
 
+  it "doesn't trip over an empty relationship" do
+    params = {
+      'type' => 'foos',
+      'relationships' => {
+        'bar' => {
+          'data' => nil
+        }
+      }
+    }
+
+    result = subject.deserialize(params)
+    expect(result).to eq({ 'foo' => {} })
+  end
+
+  it "has an emptry attributes hash" do
+    result = subject.deserialize({ 'type' => 'foos', 'attributes' => {} })
+    expect(result).to eq({ 'foo' => {} })
+  end
+
   it "normalizes keys" do
     params = {
       'type' => 'bar-foos',
