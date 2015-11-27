@@ -70,7 +70,7 @@ module JSONApi
         return if options[:links] == false
 
         id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
-        type = options[:name]
+        type = Utils.canonicalize_attribute_name(options[:name])
 
         { related: "#{options[:base_url] || ""}/#{options[:parent_type]}/#{id}/#{type}" }
       end
@@ -92,7 +92,7 @@ module JSONApi
         return if options[:links] != true
 
         id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
-        type = options[:name]
+        type = Utils.canonicalize_attribute_name(options[:name])
 
         { related: "#{options[:base_url] || ""}/#{options[:parent_type]}/#{id}/#{type}" }
       end
