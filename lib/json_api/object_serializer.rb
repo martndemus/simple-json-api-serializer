@@ -2,7 +2,6 @@ require 'active_support/json'
 require 'json_api/utils'
 require 'json_api/relationship_serializer'
 
-
 module JSONApi
   class ObjectSerializer
     def serialize(object, **options)

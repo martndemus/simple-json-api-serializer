@@ -3,17 +3,20 @@ require 'json_api/utils'
 module JSONApi
   class RelationshipSerializer
     def as_json(object, **options)
-      data =
-        if options[:to] == :many
-          ToManySerializer.new.data_for(object, options)
-        else
-          ToOneSerializer.new.data_for(object, options)
-        end
+      serializer =
+        (options[:to] == :many ? ToManySerializer : ToOneSerializer).new
 
-      if data.nil? || data == []
+      data  = serializer.data_for(object, options)
+      links = serializer.links_for(object, options)
+
+      result = {}
+      result[:data]  = data  unless data.nil?  || data.empty?
+      result[:links] = links unless links.nil? || links.empty?
+
+      if result.empty?
         nil
       else
-        { data: data }
+        result
       end
     end
 
@@ -56,9 +59,20 @@ module JSONApi
       end
 
       def data_for(object, options)
+        return if options[:data] != true
+
         ids = relationship_for(object, options)
         ids.map { |id| resource_identifier_for(type_for(object, options), id) }
            .compact
+      end
+
+      def links_for(object, options)
+        return if options[:links] == false
+
+        id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
+        type = options[:type] || options[:name]
+
+        { related: "/#{options[:parent_type]}/#{id}/#{type}" }
       end
     end
 
@@ -68,8 +82,19 @@ module JSONApi
       end
 
       def data_for(object, options)
+        return if options[:data] == false
+
         id = relationship_for(object, options)
         resource_identifier_for(type_for(object, options), id)
+      end
+
+      def links_for(object, options)
+        return if options[:links] != true
+
+        id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
+        type = (options[:type] || options[:name]).to_s.singularize
+
+        { related: "/#{options[:parent_type]}/#{id}/#{type}" }
       end
     end
   end

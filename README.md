@@ -1,9 +1,8 @@
 # Simple JSONApi::Serializer
 
 * An extremely simple JSON Api serializer.
-* It supports serializing any Ruby object. 
+* It supports serializing any Ruby object.
 * It does not target a specific framework.
-* Does not (yet) support links.
 
 ## Installation
 
@@ -68,7 +67,7 @@ MyObjectSerializer.hashify(my_object)
 ```ruby
 class PersonSerializer < JSONApi::ObjectSerializerDefinition
   id_attribute :ssn
-  
+
   attributes :first_name, :last_name
 end
 
@@ -98,7 +97,7 @@ Generates:
 ```ruby
 class PostSerializer < JSONApi::ObjectSerializerDefinition
   attributes :title, :content
-  
+
   has_one  :author
   has_many :comments
 end
@@ -107,7 +106,7 @@ Post = Struct.new(:id, :title, :content, :author, :comments) do
   def author_id
     author.id
   end
-  
+
   def comment_ids
     comments.map(&:id)
   end
@@ -134,10 +133,9 @@ Generates:
         "data": { "type": "authors", "id": "42" },
       },
       "comments": {
-        "data": [
-          { "type": "comments", "id": "1" },
-          { "type": "comments", "id": "2" }
-        ]
+        "links": {
+          "related": "/posts/1/comments"
+        }
       }
     }
   }
@@ -146,9 +144,15 @@ Generates:
 
 If your object does not abide by the `_id` or `_ids` convention for relations,
 you can specify what method should be called to retrieve the foreign key with
-`has_one  :author, foreign_key: :username`
+`has_one :author, foreign_key: :username`
 
-You can also specify the type of the related object with: `has_one :author, type: :user`.
+You can also specify the type of the related object with:
+`has_one :author, type: :user`.
+
+By default `has_one` relationships will include a `data` object but not `links`
+and `has_many` relationships will include a `links` object but not `data`. This
+can be customized by setting the `links` and `data` options to `true` or
+`false`.
 
 #### Includes
 

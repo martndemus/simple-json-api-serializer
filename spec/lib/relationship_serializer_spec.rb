@@ -39,19 +39,31 @@ RSpec.describe JSONApi::RelationshipSerializer do
 
     it "can be given a custom key" do
       object = Foo.new(1, [42])
-      result = subject.as_json(object, name: :bars, to: :many, key: :bars)
+      result = subject.as_json(object, name: :bars, to: :many, key: :bars, data: true, links: false)
       expect(result).to eq({ data: [{ type: 'bars', id: '42' }] })
     end
 
     it "can serialize a simple has many relationship" do
       object = Post.new(1, [12, 13])
-      result = subject.as_json(object, name: :comments, to: :many)
+      result = subject.as_json(object, name: :comments, to: :many, data: true, links: false)
       expect(result).to eq({
         data: [
           { type: 'comments', id: '12' },
           { type: 'comments', id: '13' }
         ]
       })
+    end
+
+    it "can add links to a has many relationship" do
+      object = Post.new(1)
+      result = subject.as_json(object, name: :comments, to: :many, data: false, parent_type: 'posts')
+      expect(result).to eq({ links: { related: '/posts/1/comments' } })
+    end
+
+    it "can add links to a belongs to relationship" do
+      object = Article.new(1, 12)
+      result = subject.as_json(object, name: :author, to: :one, data: false, links: true, parent_type: 'articles')
+      expect(result).to eq({ links: { related: '/articles/1/author' } })
     end
 
     it "returns nil when the foreign key is nil" do
