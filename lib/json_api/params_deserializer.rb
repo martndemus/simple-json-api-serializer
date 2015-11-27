@@ -25,7 +25,7 @@ module JSONApi
 
     def deserialize_relationships(relationships, attributes)
       relationships.each do |name, data|
-        data = data.fetch('data')
+        data = data['data']
         name = sanitize_attribute_name(name)
 
         if data

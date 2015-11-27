@@ -59,6 +59,20 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     expect(result).to eq({ 'foo' => {} })
   end
 
+  it "doesn't trip over relationships being link only" do
+    params = {
+      'type' => 'foos',
+      'relationships' => {
+        'bar' => {
+          'links' => { 'related' => 'foo/bar' }
+        }
+      }
+    }
+
+    result = subject.deserialize(params)
+    expect(result).to eq({ 'foo' => {} })
+  end
+
   it "has an emptry attributes hash" do
     result = subject.deserialize({ 'type' => 'foos', 'attributes' => {} })
     expect(result).to eq({ 'foo' => {} })
