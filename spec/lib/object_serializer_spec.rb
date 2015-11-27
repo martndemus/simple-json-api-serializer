@@ -124,5 +124,27 @@ RSpec.describe JSONApi::ObjectSerializer do
         }
       })
     end
+
+    it "adds a links when links: true" do
+      result = subject.serialize(Duck.new(1), links: true)
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'ducks',
+          'id'   => '1',
+          'links' => { 'self' => '/ducks/1' }
+        }
+      })
+    end
+
+    it "links uses base_url if set" do
+      result = subject.serialize(Duck.new(1), links: true, base_url: 'http://example.com')
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'ducks',
+          'id'   => '1',
+          'links' => { 'self' => 'http://example.com/ducks/1' }
+        }
+      })
+    end
   end
 end
