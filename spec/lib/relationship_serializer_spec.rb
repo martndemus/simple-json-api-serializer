@@ -56,14 +56,26 @@ RSpec.describe JSONApi::RelationshipSerializer do
 
     it "can add links to a has many relationship" do
       object = Post.new(1)
-      result = subject.as_json(object, name: :comments, to: :many, data: false, parent_type: 'posts')
+      result = subject.as_json(object, name: :comments, to: :many, parent_type: 'posts')
       expect(result).to eq({ links: { related: '/posts/1/comments' } })
+    end
+
+    it "uses base url in has many links if present" do
+      object = Post.new(1)
+      result = subject.as_json(object, name: :comments, to: :many, base_url: 'http://example.com', parent_type: 'posts')
+      expect(result).to eq({ links: { related: 'http://example.com/posts/1/comments' } })
     end
 
     it "can add links to a belongs to relationship" do
       object = Article.new(1, 12)
       result = subject.as_json(object, name: :author, to: :one, data: false, links: true, parent_type: 'articles')
       expect(result).to eq({ links: { related: '/articles/1/author' } })
+    end
+
+    it "uses base url in belongs to links" do
+      object = Article.new(1, 12)
+      result = subject.as_json(object, name: :author, to: :one, base_url: 'http://example.com', data: false, links: true, parent_type: 'articles')
+      expect(result).to eq({ links: { related: 'http://example.com/articles/1/author' } })
     end
 
     it "returns nil when the foreign key is nil" do

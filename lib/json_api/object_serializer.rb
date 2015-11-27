@@ -39,6 +39,10 @@ module JSONApi
         result[:relationships] = relationships_for(object, options)
       end
 
+      if options[:links] == true
+        result[:links] = links_for(object, options)
+      end
+
       result
     end
 
@@ -56,9 +60,15 @@ module JSONApi
 
     def relationships_for(object, options)
       relationship_serializer = RelationshipSerializer.new
+
+      defaults = {
+        parent_type: type_for(object, options),
+        base_url:    options[:base_url]
+      }
+
       options[:relationships].each_with_object({}) do |relationship, hash|
         relationship_key = Utils.canonicalize_attribute_name(relationship[:name])
-        data = relationship_serializer.as_json(object, relationship)
+        data = relationship_serializer.as_json(object, defaults.merge(relationship))
         hash[relationship_key] = data unless data.nil?
       end
     end
@@ -68,6 +78,13 @@ module JSONApi
         attribute_key = Utils.canonicalize_attribute_name(attribute)
         hash[attribute_key] = object.send(attribute)
       end
+    end
+
+    def links_for(object, **options)
+      id   = id_for(object, options)
+      type = type_for(object, options)
+
+      { self: "#{options[:base_url] || ""}/#{type}/#{id}" }
     end
 
     def id_for(object, **options)

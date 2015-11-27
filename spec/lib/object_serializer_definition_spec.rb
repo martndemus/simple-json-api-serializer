@@ -19,6 +19,19 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
     end
   end
 
+  describe ".base_url" do
+    it "stores given base_url on the class definition" do
+      example = make_definition { base_url 'http://example.com' }
+      expect(example.base_url).to eq 'http://example.com'
+    end
+
+    it "can be inherited" do
+      base = make_definition { base_url 'http://example.com' }
+      specialized = make_definition(base) {  }
+      expect(specialized.base_url).to eq 'http://example.com'
+    end
+  end
+
   describe ".id_attribute" do
     it "stores given id_attribute on the class definition" do
       example = make_definition { id_attribute :foo }
