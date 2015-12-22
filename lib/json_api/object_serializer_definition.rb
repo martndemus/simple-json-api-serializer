@@ -18,6 +18,7 @@ module JSONApi
         specialization.relationships(*relationships)
         specialization.id_attribute(id_attribute)
         specialization.base_url(base_url)
+        specialization.type(type)
       end
 
       def attributes(*attrs)
@@ -31,6 +32,10 @@ module JSONApi
 
       def base_url(url = @base_url)
         @base_url = url
+      end
+
+      def type(type = @type)
+        @type = type
       end
 
       def relationship(name, **config)
@@ -59,6 +64,7 @@ module JSONApi
         options[:id_attribute]  ||= id_attribute
         options[:attributes]    ||= attributes
         options[:relationships] ||= relationships
+        options[:type]          ||= type
         options
       end
     end

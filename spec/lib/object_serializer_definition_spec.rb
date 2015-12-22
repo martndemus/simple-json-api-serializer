@@ -6,6 +6,19 @@ def make_definition(base = JSONApi::ObjectSerializerDefinition, &block)
 end
 
 RSpec.describe JSONApi::ObjectSerializerDefinition do
+  describe ".type" do
+    it "stores given attributes on the class definition" do
+      example = make_definition { type :foo }
+      expect(example.type).to eq(:foo)
+    end
+
+    it "can be inherited" do
+      base = make_definition { type :foo }
+      specialized = make_definition(base) { }
+      expect(specialized.type).to eq(:foo)
+    end
+  end
+
   describe ".attributes" do
     it "stores given attributes on the class definition" do
       example = make_definition { attributes :foo, :bar }
@@ -82,12 +95,14 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
 
     it "passes the object with the definition to JSONApi::Serializer#serialize" do
       definition = make_definition do
+        type         :quux
         id_attribute :bar
         attributes   :foo
         relationship :baz
       end
 
       expect(serializer).to receive(:serialize).with(object, {
+        type:          :quux,
         id_attribute:  :bar,
         attributes:    [:foo],
         relationships: [{ name: :baz }]
@@ -100,6 +115,7 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
       definition = make_definition {}
 
       expect(serializer).to receive(:serialize).with(object, {
+        type:          nil,
         include:       [:foo],
         id_attribute:  nil,
         attributes:    [],
