@@ -56,7 +56,7 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     }
 
     result = subject.deserialize(params)
-    expect(result).to eq({ 'foo' => {} })
+    expect(result).to eq({ 'foo' => { "bar_id" => nil } })
   end
 
   it "doesn't trip over relationships being link only" do
@@ -70,7 +70,7 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     }
 
     result = subject.deserialize(params)
-    expect(result).to eq({ 'foo' => {} })
+    expect(result).to eq({ 'foo' => { "bar_id" => nil } })
   end
 
   it "has an emptry attributes hash" do
@@ -100,6 +100,28 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
         'quux_baz'     => 42,
         'foo_bar_id'   => 42,
         'foo_bar_type' => 'Bar'
+      }
+    })
+  end
+
+  it "sets relationship id to nil when relationship data is nil" do
+    params = {
+      'type' => 'bar-foos',
+      'attributes' => {
+        'quux-baz' => 42
+      },
+      'relationships' => {
+        'master-project' => {
+          'data' => nil
+        }
+      }
+    }
+
+    result = subject.deserialize(params)
+    expect(result).to eq({
+      'bar_foo' => {
+        'quux_baz'     => 42,
+        'master_project_id' => nil,
       }
     })
   end
