@@ -31,6 +31,8 @@ module JSONApi
         if data
           attributes["#{name}_id"]   = data.fetch('id')
           attributes["#{name}_type"] = sanitize_type_name(data.fetch('type')).classify
+        else
+          attributes["#{name}_id"]   = nil
         end
       end
     end
