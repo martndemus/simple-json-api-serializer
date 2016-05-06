@@ -59,6 +59,26 @@ RSpec.describe JSONApi::ParamsDeserializer, '#deserialize' do
     expect(result).to eq({ 'foo' => { "bar_id" => nil } })
   end
 
+  it "doesn't trip over has_many relationships" do
+    params = {
+      'type' => 'foos',
+      'relationships' => {
+        'bars' => {
+          'data' => [
+            { 'type' => 'bars',
+              'id' => 42
+            },
+            { 'type' => 'bars',
+              'id' => 43
+            }
+          ]
+        }
+      }
+    }
+    result = subject.deserialize(params)
+    expect(result).to eq({'foo' => { 'bar_ids' => [42, 43] } })
+  end
+
   it "doesn't trip over relationships being link only" do
     params = {
       'type' => 'foos',

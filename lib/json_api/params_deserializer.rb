@@ -28,7 +28,9 @@ module JSONApi
         data = data['data']
         name = sanitize_attribute_name(name)
 
-        if data
+        if data.is_a? Array
+          attributes["#{name.singularize}_ids"] = data.map { |r| r.fetch('id') }
+        elsif data
           attributes["#{name}_id"]   = data.fetch('id')
           attributes["#{name}_type"] = sanitize_type_name(data.fetch('type')).classify
         else
