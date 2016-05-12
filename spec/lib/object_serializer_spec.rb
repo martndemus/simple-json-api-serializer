@@ -102,6 +102,22 @@ RSpec.describe JSONApi::ObjectSerializer do
       })
     end
 
+    it "accepts a hash as metadata" do
+      meta = { foo: 12, bar: 'foo12' }
+      result = subject.serialize(Duck.new(1), meta: meta)
+
+      expect(JSON.parse(result)).to eq({
+        'data' => {
+          'type' => 'ducks',
+          'id'   => '1'
+        },
+        'meta' => {
+          'foo' => 12,
+          'bar' => 'foo12'
+        }
+      })
+    end
+
     it "can serialize for a new record" do
       result = subject.serialize(Duck.new(nil), new_record: true)
       expect(JSON.parse(result)).to eq({
