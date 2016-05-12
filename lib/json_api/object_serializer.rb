@@ -15,6 +15,10 @@ module JSONApi
         hash[:included] = options[:include]
       end
 
+      if options[:meta].is_a?(Hash)
+        hash[:meta] = options[:meta]
+      end
+
       hash
     end
 
