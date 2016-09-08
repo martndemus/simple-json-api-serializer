@@ -45,7 +45,27 @@ module JSONApi
 
       def relationships(*configs)
         @relationships ||= []
-        @relationships |= configs
+        if @relationships.empty?
+          @relationships |= configs
+        else
+          configs.each do |new_hash|
+            if find_index(new_hash)
+              @relationships[find_index(new_hash)] = new_hash
+            else
+              @relationships << new_hash
+            end
+          end
+          @relationships
+        end
+      end
+
+      def find_index(other_hash = nil)
+        @name_index ||= begin
+          @relationships.each_with_index do |relation, i|
+            return i if relation[:name] == other_hash[:name]
+          end
+          false
+        end
       end
 
       def has_one(name, **config)
