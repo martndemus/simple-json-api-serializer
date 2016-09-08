@@ -69,6 +69,13 @@ RSpec.describe JSONApi::ObjectSerializerDefinition do
       specialized = make_definition(base) { relationship :bar }
       expect(specialized.relationships).to eq [{ name: :foo }, { name: :bar }]
     end
+
+    it "overrides relationships from its parent" do
+      base = make_definition { has_many :foos, links: false }
+      specialized = make_definition(base) { has_many :foos, links: true }
+      expect(specialized.relationships)
+        .to eq [{links: true, to: :many, name: :foos}]
+    end
   end
 
   describe ".has_one" do
