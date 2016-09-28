@@ -10,8 +10,8 @@ module JSONApi
       links = serializer.links_for(object, options)
 
       result = {}
-      result[:data]  = data  unless data.nil?  || data.empty?
-      result[:links] = links unless links.nil? || links.empty?
+      result[:data]  = data unless data.nil?
+      result[:links] = links unless links.nil?
 
       if result.empty?
         nil

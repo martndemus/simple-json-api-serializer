@@ -54,6 +54,12 @@ RSpec.describe JSONApi::RelationshipSerializer do
       })
     end
 
+    it 'returns [] when has many relationship has no objects' do
+      object = Post.new(1, [])
+      result = subject.as_json(object, name: :comments, to: :many, data: true, links: false)
+      expect(result).to eq({ data: [] })
+    end
+
     it "can add links to a has many relationship" do
       object = Post.new(1)
       result = subject.as_json(object, name: :comments, to: :many, parent_type: 'posts')
