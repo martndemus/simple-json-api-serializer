@@ -87,7 +87,7 @@ RSpec.describe JSONApi::RelationshipSerializer do
     it "returns nil when the foreign key is nil" do
       object = Article.new(1, nil)
       result = subject.as_json(object, name: :author, to: :one)
-      expect(result).to be nil
+      expect(result).to eq({data: nil})
     end
   end
 end
