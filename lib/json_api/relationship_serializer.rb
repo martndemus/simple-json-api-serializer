@@ -10,8 +10,8 @@ module JSONApi
       links = serializer.links_for(object, options)
 
       result = {}
-      result[:data]  = data unless data.nil?
-      result[:links] = links unless links.nil?
+      result[:data]  = data unless data == false
+      result[:links] = links unless links == false
 
       if result.empty?
         nil
@@ -59,7 +59,7 @@ module JSONApi
       end
 
       def data_for(object, options)
-        return if options[:data] != true
+        return false if options[:data] != true
 
         ids = relationship_for(object, options)
         ids.map { |id| resource_identifier_for(type_for(object, options), id) }
@@ -67,7 +67,7 @@ module JSONApi
       end
 
       def links_for(object, options)
-        return if options[:links] == false
+        return false if options[:links] == false
 
         id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
         type = Utils.canonicalize_attribute_name(options[:name])
@@ -82,14 +82,14 @@ module JSONApi
       end
 
       def data_for(object, options)
-        return if options[:data] == false
+        return false if options[:data] == false
 
         id = relationship_for(object, options)
         resource_identifier_for(type_for(object, options), id)
       end
 
       def links_for(object, options)
-        return if options[:links] != true
+        return false if options[:links] != true
 
         id   = Utils.canonicalize_id(object.send(options[:id_attribute] || :id))
         type = Utils.canonicalize_attribute_name(options[:name])

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    simple-json-api-serializer (1.0.9)
+    simple-json-api-serializer (1.0.10)
       activesupport (~> 4.2)
 
 GEM
@@ -45,4 +45,4 @@ DEPENDENCIES
   simple-json-api-serializer!
 
 BUNDLED WITH
-   1.10.6
+   1.12.5
